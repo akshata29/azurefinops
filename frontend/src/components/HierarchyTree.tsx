@@ -5,6 +5,7 @@ import type { HierarchyNode } from '../api/types';
 import { formatCurrency, formatPercent } from '../lib/format';
 
 const TYPE_LABEL: Record<string, string> = {
+  affiliate: 'Affiliate',
   billingProfile: 'Billing profile',
   invoiceSection: 'Invoice section',
   subscription: 'Subscription',
@@ -13,6 +14,7 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 const typeTone: Record<string, string> = {
+  affiliate: 'text-slate-900',
   billingProfile: 'text-slate-900',
   invoiceSection: 'text-brand-700',
   subscription: 'text-slate-700',

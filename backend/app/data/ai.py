@@ -8,6 +8,7 @@ from app.models import (
     AiConsumptionRow,
     AiSourceSummary,
     AiTrendPoint,
+    DeploymentTpm,
 )
 
 # Approx blended $ per 1K tokens (demo).
@@ -109,6 +110,33 @@ def build_ai_consumption(affiliate_id: str | None) -> AiConsumption:
         tks = total_tokens / len(months) * growth
         trend.append(AiTrendPoint(month=m, tokens=round(tks, 0), cost=round(tks / 1000 * _PER_1K, 2)))
 
+    # Demo per-deployment TPM (last 24h), a few Foundry model deployments.
+    dr = _rng(f"tpm:{affiliate_id or 'ALL'}")
+    demo_models = [
+        ("aoai-eastus", "gpt-4o", "gpt-4o"),
+        ("aoai-eastus", "gpt-4o-mini", "gpt-4o-mini"),
+        ("aoai-eastus", "text-embedding-3-large", "text-embedding-3-large"),
+        ("foundry-swc", "gpt-4.1", "gpt-4.1"),
+        ("foundry-swc", "o3-mini", "o3-mini"),
+    ]
+    deployments: list[DeploymentTpm] = []
+    for account, deployment, model in demo_models:
+        peak = round(dr.uniform(8_000, 120_000), 0)
+        avg = round(peak * dr.uniform(0.2, 0.55), 1)
+        deployments.append(
+            DeploymentTpm(
+                affiliate_id=affiliate_id or "",
+                account=account,
+                deployment=deployment,
+                model=model,
+                total_tokens=round(avg * dr.uniform(200, 900), 0),
+                avg_tpm=avg,
+                peak_tpm=peak,
+                window_hours=24,
+            )
+        )
+    deployments.sort(key=lambda d: d.peak_tpm, reverse=True)
+
     return AiConsumption(
         total_ai_cost=total_ai_cost,
         total_tokens=total_tokens,
@@ -117,4 +145,5 @@ def build_ai_consumption(affiliate_id: str | None) -> AiConsumption:
         by_source=by_source,
         trend=trend,
         rows=sorted(rows, key=lambda x: x.cost, reverse=True)[:40],
+        deployments=deployments,
     )

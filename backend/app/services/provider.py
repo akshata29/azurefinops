@@ -121,64 +121,32 @@ class MockDataProvider:
 
 
 class LiveDataProvider:
-    """Live provider — queries ADX/storage and the MACC puller.
+    """Backwards-compatible alias — the live provider is now Azure Cost Management.
 
-    Wired for the real environment. Query bodies are intentionally left as
-    integration points; the shapes mirror MockDataProvider so the API contract
-    is identical regardless of source.
+    Retained so ``from app.services.provider import LiveDataProvider`` keeps
+    working; delegates entirely to :class:`AzureDataProvider`.
     """
 
-    def __init__(self, settings: Settings) -> None:
-        self.settings = settings
-        # Lazy imports so demo mode needs no Azure SDKs installed at runtime.
-        from app.services.macc_puller import MaccPuller  # noqa: WPS433
+    def __new__(cls, settings: Settings):  # type: ignore[misc]
+        from app.services.azure_provider import AzureDataProvider  # lazy import
 
-        self.macc = MaccPuller(settings)
-
-    def affiliates(self) -> list[Affiliate]:  # pragma: no cover - integration
-        raise NotImplementedError("Query the affiliate registry (Cosmos/SQL/ADX) here.")
-
-    def macc_balances(self) -> list[MaccBalance]:  # pragma: no cover - integration
-        raise NotImplementedError("Read MaccBalance table (ADX) populated by MaccPuller.")
-
-    def macc_detail(self, affiliate_id: str) -> MaccDetail | None:  # pragma: no cover
-        raise NotImplementedError("Read MaccBalance + FactMaccEvent for the affiliate.")
-
-    def cost_summary(self, affiliate_id: str | None) -> CostSummary:  # pragma: no cover
-        raise NotImplementedError("Query FOCUS Costs table in ADX/Fabric.")
-
-    def licenses(self, affiliate_id: str | None) -> list[License]:  # pragma: no cover
-        raise NotImplementedError("Query DimLicense reference table.")
-
-    def portfolio_summary(self) -> PortfolioSummary:  # pragma: no cover
-        raise NotImplementedError("Aggregate over MaccBalance + Costs in ADX.")
-
-    def affiliate_breakdown(self, affiliate_id: str) -> AffiliateCostDetail | None:  # pragma: no cover
-        raise NotImplementedError("Group FOCUS Costs by ServiceCategory/Service/ResourceType/ResourceId in ADX.")
-
-    def affiliate_resources(self, affiliate_id: str) -> list[ResourceCost]:  # pragma: no cover
-        raise NotImplementedError("Query resource-level FOCUS rows for the affiliate in ADX.")
-
-    def rate_optimization(self, affiliate_id: str | None) -> RateOptimization:  # pragma: no cover
-        raise NotImplementedError("Read ReservationRecommendations + savings plan datasets (FinOps hubs).")
-
-    def prepayment(self) -> PrepaymentSummary:  # pragma: no cover
-        raise NotImplementedError("Aggregate MACC lots + Azure prepayment balances.")
-
-    def offer_mix(self) -> list[OfferMixSlice]:  # pragma: no cover
-        raise NotImplementedError("Group FOCUS invoiced usage by PricingModel/offer type.")
-
-    def hierarchy(self, affiliate_id: str) -> AffiliateHierarchy | None:  # pragma: no cover
-        raise NotImplementedError("Group FOCUS by BillingProfile/InvoiceSection/Subscription/RG/Resource.")
-
-    def ai_consumption(self, affiliate_id: str | None) -> AiConsumption:  # pragma: no cover
-        raise NotImplementedError("Combine FOCUS AI meters + Azure Monitor tokens + GitHub/Graph Copilot APIs.")
-
-    def tco(self, affiliate_id: str | None) -> TcoSummary:  # pragma: no cover
-        raise NotImplementedError("Union Azure FOCUS cost + license feed + external Copilot spend.")
+        return AzureDataProvider(settings)
 
 
 def get_provider(settings: Settings) -> DataProvider:
     if settings.use_mock:
         return MockDataProvider()
-    return LiveDataProvider(settings)
+    return _get_live_provider(settings)
+
+
+_live_provider: DataProvider | None = None
+
+
+def _get_live_provider(settings: Settings) -> DataProvider:
+    """Cache the live provider so its Cost Management TTL cache survives requests."""
+    global _live_provider
+    if _live_provider is None:
+        from app.services.azure_provider import AzureDataProvider  # lazy import (needs azure SDKs)
+
+        _live_provider = AzureDataProvider(settings)
+    return _live_provider

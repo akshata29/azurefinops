@@ -91,6 +91,85 @@ export function AiConsumptionPage() {
 
           <div className="card">
             <div className="border-b border-slate-100 p-4">
+              <h3 className="text-sm font-semibold text-slate-900">Foundry deployments — tokens/min</h3>
+              <p className="text-xs text-slate-400">
+                Actual consumed TPM per model deployment · Azure Monitor (last 24h)
+              </p>
+            </div>
+            {data.deployments.length ? (
+              <div className="grid grid-cols-1 gap-6 p-4 lg:grid-cols-3">
+                <div className="overflow-x-auto lg:col-span-2">
+                  <table className="min-w-full divide-y divide-slate-100">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="th">Deployment</th>
+                        <th className="th">Model</th>
+                        <th className="th">Account</th>
+                        <th className="th text-right">Total tokens</th>
+                        <th className="th text-right">Avg TPM</th>
+                        <th className="th text-right">Peak TPM</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-50">
+                      {data.deployments.map((d, i) => (
+                        <tr key={i} className="hover:bg-slate-50/60">
+                          <td className="td font-medium text-slate-900">{d.deployment}</td>
+                          <td className="td text-slate-500">{d.model || '—'}</td>
+                          <td className="td font-mono text-xs text-slate-500">{d.account}</td>
+                          <td className="td text-right">{formatNumber(d.total_tokens, true)}</td>
+                          <td className="td text-right">{formatNumber(d.avg_tpm, true)}</td>
+                          <td className="td text-right font-semibold text-slate-900">
+                            {formatNumber(d.peak_tpm, true)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div>
+                  <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">
+                    Peak TPM by deployment
+                  </p>
+                  <ResponsiveContainer width="100%" height={260}>
+                    <BarChart data={data.deployments.slice(0, 8)} layout="vertical" margin={{ left: 8, right: 16 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} horizontal={false} />
+                      <XAxis
+                        type="number"
+                        tickFormatter={(v) => formatNumber(v, true)}
+                        tick={{ fontSize: 11, fill: CHART.slate }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        type="category"
+                        dataKey="deployment"
+                        width={110}
+                        tick={{ fontSize: 11, fill: '#64748b' }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <Tooltip
+                        formatter={(v: number) => `${formatNumber(v)} TPM`}
+                        contentStyle={tooltipStyle}
+                      />
+                      <Bar dataKey="peak_tpm" radius={[0, 4, 4, 0]}>
+                        {data.deployments.slice(0, 8).map((_, i) => (
+                          <Cell key={i} fill={SERIES[i % SERIES.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            ) : (
+              <p className="p-6 text-center text-sm text-slate-400">
+                No deployment token metrics available for this scope.
+              </p>
+            )}
+          </div>
+
+          <div className="card">
+            <div className="border-b border-slate-100 p-4">
               <h3 className="text-sm font-semibold text-slate-900">Consumption detail</h3>
               <p className="text-xs text-slate-400">Data origin shows how each source is collected (Q5)</p>
             </div>

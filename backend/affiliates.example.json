@@ -1,0 +1,29 @@
+{
+  "$comment": "Affiliate registry — copy to affiliates.json (or point AFFILIATE_REGISTRY at it) to onboard affiliates/tenants. Each affiliate maps to one or more subscriptions, optionally in its own tenant. Omit tenant_id to use the signed-in tenant. billing_account enables MACC; github_orgs enables GitHub Copilot seats. Delete this file / leave no registry to auto-discover every subscription the signed-in identity can read.",
+  "affiliates": [
+    {
+      "affiliate_id": "aff-001",
+      "name": "Contoso Retail",
+      "tenant_id": "11111111-aaaa-bbbb-cccc-111111111111",
+      "agreement_type": "EA",
+      "billing_account": "7654321",
+      "billing_profile": null,
+      "subscription_ids": [
+        "aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e"
+      ],
+      "github_orgs": ["contoso", "contoso-labs"]
+    },
+    {
+      "affiliate_id": "aff-002",
+      "name": "Fabrikam Health",
+      "tenant_id": "22222222-aaaa-bbbb-cccc-222222222222",
+      "agreement_type": "MCA",
+      "billing_account": "9a157b81-1234:5678_2024-01-01",
+      "billing_profile": "PROF-1234-5678",
+      "subscription_ids": [
+        "bbbb1b1b-cc2c-dd3d-ee4e-ffffff5f5f5f",
+        "cccc2c2c-dd3d-ee4e-ff5f-000000606060"
+      ]
+    }
+  ]
+}

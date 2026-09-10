@@ -18,6 +18,16 @@ import type {
 
 const http = axios.create({ baseURL: '/api/v1', timeout: 30000 });
 
+export interface HealthStatus {
+  status: string;
+  mode: 'mock' | 'live';
+  data_source: string;
+}
+
+export const healthApi = {
+  get: () => http.get<HealthStatus>('/health').then((r) => r.data),
+};
+
 export const summaryApi = {
   get: () => http.get<PortfolioSummary>('/summary').then((r) => r.data),
 };

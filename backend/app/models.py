@@ -227,6 +227,20 @@ class AiTrendPoint(BaseModel):
     cost: float
 
 
+class DeploymentTpm(BaseModel):
+    """Actual consumed tokens-per-minute for one Foundry / Azure OpenAI model
+    deployment, from Azure Monitor 1-minute TokenTransaction metrics."""
+
+    affiliate_id: str
+    account: str        # Cognitive Services / Foundry resource (account) name
+    deployment: str     # ModelDeploymentName dimension
+    model: str = ""     # underlying model (from the deployments API), when known
+    total_tokens: float
+    avg_tpm: float      # mean tokens/min over minutes with activity
+    peak_tpm: float     # max tokens in any single minute
+    window_hours: int   # lookback window the TPM was measured over
+
+
 class AiConsumption(BaseModel):
     total_ai_cost: float
     total_tokens: float
@@ -236,6 +250,7 @@ class AiConsumption(BaseModel):
     by_source: list[AiSourceSummary]
     trend: list[AiTrendPoint]
     rows: list[AiConsumptionRow]
+    deployments: list[DeploymentTpm] = Field(default_factory=list)
 
 
 # --- Slice E: Total cost of ownership --------------------------------------

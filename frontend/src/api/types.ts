@@ -193,6 +193,16 @@ export interface AiTrendPoint {
   tokens: number;
   cost: number;
 }
+export interface DeploymentTpm {
+  affiliate_id: string;
+  account: string;
+  deployment: string;
+  model: string;
+  total_tokens: number;
+  avg_tpm: number;
+  peak_tpm: number;
+  window_hours: number;
+}
 export interface AiConsumption {
   total_ai_cost: number;
   total_tokens: number;
@@ -202,6 +212,7 @@ export interface AiConsumption {
   by_source: AiSourceSummary[];
   trend: AiTrendPoint[];
   rows: AiConsumptionRow[];
+  deployments: DeploymentTpm[];
 }
 
 // Slice E — TCO

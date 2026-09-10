@@ -13,6 +13,11 @@ env/
 .env
 !*.env.example
 
+# Affiliate registry (may contain real tenant/subscription IDs)
+affiliates.json
+backend/affiliates.json
+!affiliates.example.json
+
 # Node / frontend
 node_modules/
 dist/
@@ -34,3 +39,5 @@ bicepbuild/
 
 # Logs
 *.log
+
+backend/data/*
