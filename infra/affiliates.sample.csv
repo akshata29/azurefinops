@@ -1,0 +1,4 @@
+AffiliateId,Name,TenantId,AgreementType,BillingAccount,BillingProfile,SubscriptionId,RemoteHubStorageUri,CentralStorageAccountId
+aff-001,Contoso Retail,11111111-aaaa-bbbb-cccc-111111111111,EA,7654321,,aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e,https://hubstore.dfs.core.windows.net/,/subscriptions/0000/resourceGroups/rg-hub/providers/Microsoft.Storage/storageAccounts/hubstore
+aff-002,Fabrikam Health,22222222-aaaa-bbbb-cccc-222222222222,MCA,9a157b81-1234:5678_2024-01-01,PROF-1234-5678,,https://hubstore.dfs.core.windows.net/,/subscriptions/0000/resourceGroups/rg-hub/providers/Microsoft.Storage/storageAccounts/hubstore
+aff-003,Northwind Logistics,33333333-aaaa-bbbb-cccc-333333333333,EA,1234567,,bbbb1b1b-cc2c-dd3d-ee4e-ffffff5f5f5f,https://hubstore.dfs.core.windows.net/,/subscriptions/0000/resourceGroups/rg-hub/providers/Microsoft.Storage/storageAccounts/hubstore

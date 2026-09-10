@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-card;
+  }
+  .card-pad {
+    @apply p-5;
+  }
+  .nav-link {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900;
+  }
+  .nav-link-active {
+    @apply bg-brand-50 text-brand-700 hover:bg-brand-50 hover:text-brand-700;
+  }
+  .th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500;
+  }
+  .td {
+    @apply px-4 py-3 text-sm text-slate-700;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Dark theme (class strategy) — global overrides so every existing    */
+/* page flips cleanly without per-file dark: variants.                 */
+/* ------------------------------------------------------------------ */
+.dark body {
+  background-color: #0b1120;
+  color: #e2e8f0;
+}
+
+/* Component-class surfaces */
+.dark .card {
+  background-color: #111b2e;
+  border-color: #22304a;
+}
+.dark .th {
+  color: #94a3b8;
+}
+.dark .td {
+  color: #cbd5e1;
+}
+.dark .nav-link {
+  color: #94a3b8;
+}
+.dark .nav-link:hover {
+  background-color: #1a2536;
+  color: #ffffff;
+}
+.dark .nav-link-active,
+.dark .nav-link-active:hover {
+  background-color: rgba(37, 99, 235, 0.18);
+  color: #93c5fd;
+}
+
+/* Backgrounds */
+.dark .bg-white { background-color: #111b2e !important; }
+.dark .bg-slate-50 { background-color: #1a2536 !important; }
+.dark .bg-slate-100 { background-color: #24324a !important; }
+.dark .bg-slate-50\/60 { background-color: #1a2536 !important; }
+.dark .hover\:bg-slate-50:hover { background-color: #1a2536 !important; }
+.dark .hover\:bg-slate-50\/60:hover { background-color: #1a2536 !important; }
+.dark .bg-brand-50 { background-color: rgba(37, 99, 235, 0.16) !important; }
+
+/* Text */
+.dark .text-slate-900 { color: #f1f5f9 !important; }
+.dark .text-slate-700 { color: #cbd5e1 !important; }
+.dark .text-slate-600 { color: #cbd5e1 !important; }
+.dark .text-brand-700 { color: #93c5fd !important; }
+
+/* Borders + dividers */
+.dark .border-slate-200 { border-color: #22304a !important; }
+.dark .border-slate-100 { border-color: #1c2740 !important; }
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: #1c2740 !important; }
+.dark .divide-slate-50 > :not([hidden]) ~ :not([hidden]) { border-color: #1c2740 !important; }
+
+/* Form controls */
+.dark input,
+.dark select {
+  color: #e2e8f0;
+}
+.dark input::placeholder { color: #64748b; }
